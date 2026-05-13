@@ -3,7 +3,7 @@
 import { useState, useMemo } from 'react';
 import { CompanyCard } from './CompanyCard';
 
-export function CompanyList({ empresas, profesionales }: { empresas: any[], profesionales: any[] }) {
+export function CompanyList({ empresas, profesionales, searchQuery }: { empresas: any[], profesionales: any[], searchQuery?: string }) {
   const [expandedId, setExpandedId] = useState<number | string | null>(null);
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [minRating, setMinRating] = useState<number>(0);
@@ -17,21 +17,30 @@ export function CompanyList({ empresas, profesionales }: { empresas: any[], prof
     return Array.from(s).sort();
   }, [empresas]);
 
-  // Lógica combinada: Filtra por servicio Y por estrellas
+  // Lógica combinada: Filtra por servicio, valoración y búsqueda
   const empresasFiltradas = empresas?.filter(empresa => {
     const cumpleServicio = selectedService ? empresa.servicio === selectedService : true;
-    
-    // Aquí está el cambio: ahora busca "empresa.estrellas"
     const cumpleValoracion = (empresa.estrellas || 0) >= minRating;
+    
+    // Búsqueda de nombre de empresa o profesional
+    let cumpleBusqueda = true;
+    if (searchQuery) {
+      const q = searchQuery.toLowerCase();
+      const matchEmpresa = empresa.nombre?.toLowerCase().includes(q) || empresa.servicio?.toLowerCase().includes(q);
+      const profesionalesEmpresa = profesionales?.filter((p: any) => p.id_empresa === empresa.id) || [];
+      const matchProfesional = profesionalesEmpresa.some((p: any) => p.nombre?.toLowerCase().includes(q));
+      
+      cumpleBusqueda = matchEmpresa || matchProfesional;
+    }
 
-    return cumpleServicio && cumpleValoracion;
+    return cumpleServicio && cumpleValoracion && cumpleBusqueda;
   });
 
   return (
     <div className="flex flex-col md:flex-row gap-8 max-w-[90rem] mx-auto px-6 md:px-12 lg:px-24">
       {/* Barra lateral de filtros */}
       <aside className="w-full md:w-64 flex-shrink-0">
-        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 sticky top-6">
+        <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 sticky top-24">
           
           {/* Bloque 1: Filtro por Servicio */}
           <div>
@@ -40,7 +49,7 @@ export function CompanyList({ empresas, profesionales }: { empresas: any[], prof
               <li>
                 <button
                   onClick={() => { setSelectedService(null); setExpandedId(null); }}
-                  className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${selectedService === null ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
+                  className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${selectedService === null ? 'bg-[#1b4d70]/10 text-[#1b4d70] font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
                 >
                   Todos los servicios
                 </button>
@@ -49,7 +58,7 @@ export function CompanyList({ empresas, profesionales }: { empresas: any[], prof
                 <li key={servicio}>
                   <button
                     onClick={() => { setSelectedService(servicio); setExpandedId(null); }}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${selectedService === servicio ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${selectedService === servicio ? 'bg-[#1b4d70]/10 text-[#1b4d70] font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
                   >
                     {servicio}
                   </button>
@@ -71,7 +80,7 @@ export function CompanyList({ empresas, profesionales }: { empresas: any[], prof
                 <li key={opcion.value}>
                   <button
                     onClick={() => { setMinRating(opcion.value); setExpandedId(null); }}
-                    className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${minRating === opcion.value ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
+                    className={`w-full text-left px-3 py-2 rounded-lg transition text-sm ${minRating === opcion.value ? 'bg-[#1b4d70]/10 text-[#1b4d70] font-semibold' : 'text-gray-600 hover:bg-gray-50'}`}
                   >
                     {opcion.label}
                   </button>
@@ -99,7 +108,7 @@ export function CompanyList({ empresas, profesionales }: { empresas: any[], prof
         
         {empresasFiltradas?.length === 0 && (
           <div className="text-center py-12 bg-white rounded-xl shadow-sm border border-gray-100 mt-6">
-            <p className="text-gray-500">No se encontraron empresas con estos filtros.</p>
+            <p className="text-gray-500">No se encontraron empresas con estos filtros o búsqueda.</p>
           </div>
         )}
       </div>

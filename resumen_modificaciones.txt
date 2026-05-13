@@ -1,0 +1,39 @@
+Resumen de modificaciones en el proyecto TeLoArreglo
+===================================================
+
+A lo largo del desarrollo de la aplicación, hemos ido realizando diversas modificaciones y añadiendo nuevas funcionalidades organizadas por carpetas. Aquí tienes el resumen de lo que hemos hecho en cada una de ellas:
+
+1. Carpeta `app/` (Enrutador Principal de Next.js)
+------------------------------------------------
+Esta es la carpeta principal donde se define la estructura de las páginas y la navegación general.
+- `layout.tsx`: 
+  - Hemos configurado la barra de navegación superior (Header) fijada en la parte alta de la pantalla, que incluye el logo de la empresa y una barra de búsqueda.
+  - Hemos añadido la configuración (metadata) para que el logo de la empresa (`logo.png`) se use también como el icono de la pestaña del navegador (favicon), eliminando el icono genérico que venía por defecto.
+- `page.tsx`:
+  - Es la página principal (Dashboard). Hemos diseñado una interfaz que muestra tarjetas de empresas (`CompanyCard`).
+  - Añadimos una funcionalidad de filtrado en una barra lateral para poder buscar empresas según los servicios que ofrecen.
+  - Modificamos el layout para dar más espacio (whitespace) entre las tarjetas, mejorando la legibilidad.
+- `profesional/[id]/page.tsx`:
+  - Creamos esta nueva ruta dinámica para mostrar los detalles completos de cada profesional (Página de Perfil del Profesional).
+  - Al hacer clic en un profesional, esta página consulta la base de datos (Supabase) para mostrar su nombre, tarifa por hora, valoración (estrellas), horario y una descripción detallada.
+
+2. Carpeta `components/` (Componentes Reutilizables de React)
+-------------------------------------------------------------
+Aquí guardamos los bloques de construcción visuales de la aplicación.
+- `CompanyList.tsx`:
+  - Componente encargado de organizar y renderizar la lista completa de las tarjetas de empresas.
+- `CompanyCard.tsx`:
+  - Componente que representa a cada empresa individualmente.
+  - Lo modificamos para mostrar dinámicamente la imagen de perfil de cada empresa (`foto_url`).
+  - Añadimos interactividad: al hacer clic en la tarjeta de una empresa, esta se expande para mostrar una lista de los profesionales asociados a ella, obteniendo los datos de la tabla `profesionales`.
+
+3. Carpeta `public/` (Archivos Estáticos)
+-----------------------------------------
+Aquí se guardan los archivos públicos como imágenes e iconos.
+- Añadimos el archivo `logo.png` que se utiliza tanto en el encabezado principal de la web (en `layout.tsx`) como en el icono de la pestaña del navegador.
+
+4. Base de Datos (Supabase) - Integración general
+-------------------------------------------------
+Aunque no es una carpeta local, hemos integrado el frontend con tablas de Supabase:
+- Tabla `empresas`: De donde sacamos la información general y las imágenes (`foto_url`) de cada empresa.
+- Tabla `profesionales`: Relacionada con las empresas (mediante `id_empresa`) para mostrar quiénes trabajan ahí y sus detalles específicos (tarifas, horarios, valoraciones).

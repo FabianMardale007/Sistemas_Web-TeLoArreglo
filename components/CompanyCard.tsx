@@ -1,5 +1,7 @@
 "use client";
 
+import Link from "next/link";
+
 export function CompanyCard({ 
   empresa, 
   profesionales,
@@ -36,7 +38,7 @@ export function CompanyCard({
             ⭐ {empresa.estrellas}
           </span>
           <button 
-            className="bg-blue-600 text-white px-3 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition"
+            className="bg-[#66a032] text-white px-3 py-1.5 text-sm rounded-lg hover:bg-[#528228] transition"
             onClick={(e) => {
                e.stopPropagation(); // Evitar que el clic se propague y cierre/abra la tarjeta
                alert(`Contactar con ${empresa.nombre}`);
@@ -54,12 +56,12 @@ export function CompanyCard({
           {profesionales.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {profesionales.map((prof) => (
-                <div key={prof.id} className="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition">
+                <Link href={`/profesional/${prof.id}`} key={prof.id} className="flex flex-col p-4 bg-gray-50 rounded-xl border border-gray-200 shadow-sm hover:shadow-md hover:bg-gray-100 hover:-translate-y-1 transition transform duration-200 cursor-pointer text-left block">
                   <div className="flex items-center mb-3">
                     {prof.foto_url ? (
                       <img src={prof.foto_url} alt={prof.nombre} className="w-12 h-12 rounded-full object-cover mr-3 border-2 border-white shadow-sm" />
                     ) : (
-                      <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center mr-3 text-blue-600 text-lg font-bold shadow-sm">
+                      <div className="w-12 h-12 rounded-full bg-[#1b4d70]/10 flex items-center justify-center mr-3 text-[#1b4d70] text-lg font-bold shadow-sm">
                         {prof.nombre?.charAt(0) || 'P'}
                       </div>
                     )}
@@ -73,16 +75,16 @@ export function CompanyCard({
                   
                   <div className="mt-auto flex justify-between items-center pt-3 border-t border-gray-200">
                     <span className="text-gray-600 font-medium text-xs">Precio:</span>
-                    <span className="text-blue-600 font-bold text-base">
+                    <span className="text-[#1b4d70] font-bold text-base">
                       {prof.precio_hora !== undefined ? `${prof.precio_hora}€/h` : 'A convenir'}
                     </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (
-            <div className="bg-blue-50 p-5 rounded-xl border border-blue-100 flex items-center justify-center flex-1">
-              <p className="text-blue-600 font-medium text-sm">Aún no hay profesionales registrados en esta empresa.</p>
+            <div className="bg-[#1b4d70]/5 p-5 rounded-xl border border-[#1b4d70]/20 flex items-center justify-center flex-1">
+              <p className="text-[#1b4d70] font-medium text-sm">Aún no hay profesionales registrados en esta empresa.</p>
             </div>
           )}
         </div>
